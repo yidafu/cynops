@@ -33,12 +33,28 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                //put your multiplatform dependencies here
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(libs.kotest.assertions.core)
+                implementation(libs.kotest.property)
+                implementation(libs.kotlinx.datetime)
+//                implementation("io.kotest:kotest-extensions-mockserver:4.4.3")
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                implementation(libs.mockk)
+                implementation(libs.slf4j.api)
+                implementation(libs.kotest.runner.junit5)
+
+                // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+                implementation(libs.slf4j.simple)
             }
         }
     }
