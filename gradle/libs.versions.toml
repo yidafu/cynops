@@ -1,32 +1,52 @@
 [versions]
 agp = "8.0.2"
-kotestRunnerJunit5 = "5.8.0"
-kotestAssertionsCore = "5.8.0"
-kotestProperty = "5.8.0"
-kotlin = "1.9.0"
+koinCore = "3.5.3"
+kotest = "5.8.0"
+kotlin = "1.9.22"
 kotlinxCoroutinesCore = "1.7.3"
 kotlinxDatetime = "0.5.0"
+kotlinxIoCore = "0.3.1"
 kotlinxSerializationJson = "1.6.0"
+ktor = "2.3.8"
 mockk = "1.13.9"
 nexus-publish = "2.0.0-rc-1"
 android-minSdk = "24"
 android-compileSdk = "33"
+okioNodefilesystem = "3.8.0"
+okio = "3.8.0"
 slf4jApi = "2.0.9"
 slf4jSimple = "2.0.11"
+ksp = "1.9.22-1.0.17"
+ktlint = "12.1.0"
 
 [libraries]
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotestRunnerJunit5" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotestAssertionsCore" }
-kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotestProperty" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinCore" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinCore" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinCore" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIoCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 nexus-publish = { module = "io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin", version.ref = "nexus-publish" }
+okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
+okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
+okio-core = { module = "com.squareup.okio:okio", version.ref = "okio" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimple" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id="com.google.devtools.ksp", version.ref="ksp" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref="ktlint" }
