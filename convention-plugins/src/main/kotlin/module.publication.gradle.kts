@@ -5,6 +5,17 @@ import org.gradle.kotlin.dsl.`maven-publish`
 plugins {
     `maven-publish`
     signing
+//    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+
+//    kotlin("plugin.serialization")
+}
+
+
+repositories {
+    maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
+    gradlePluginPortal()
+    google()
+    mavenCentral()
 }
 
 publishing {
@@ -49,3 +60,18 @@ signing {
         sign(publishing.publications)
     }
 }
+
+
+//configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+//    version.set("0.50.0")
+//    debug.set(true)
+//    android.set(false)
+//    outputToConsole.set(true)
+//    outputColorName.set("RED")
+//
+//    disabledRules.set(setOf("final-newline", "no-wildcard-imports")) // not supported with ktlint 0.48+
+////    filter {
+////        exclude("**/generated/**")
+////        include("**/kotlin/**")
+////    }
+//}
