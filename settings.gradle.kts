@@ -14,6 +14,7 @@ dependencyResolutionManagement {
         maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 

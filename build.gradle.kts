@@ -5,23 +5,18 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform).apply(false)
 }
 
-allprojects {
-
-    repositories {
-        maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
-        google()
-        mavenCentral()
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
-    }
-
-}
 subprojects {
     repositories {
-
+        gradlePluginPortal()
         maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
         google()
         mavenCentral()
     }
+}
+
+repositories {
+    gradlePluginPortal()
+    maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
+    google()
+    mavenCentral()
 }
