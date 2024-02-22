@@ -1,10 +1,12 @@
 package dev.yidafu.cynops.reporter
 
+import kotlinx.io.RawSource
+
 /**
  * log file input stream
  */
 class LogFileInputStream(
-//    private val file: File,
+    private val file: RawSource,
     offset: Long,
     private val bufferedSize: Int = 8 * 1024,
 //    private val fileInputStream: FileInputStream = FileInputStream(file),

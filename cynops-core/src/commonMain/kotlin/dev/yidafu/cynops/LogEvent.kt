@@ -1,5 +1,6 @@
 package dev.yidafu.cynops
 
+import dev.yidafu.cynops.helpers.getPid
 import dev.yidafu.cynops.mdc.MDC
 import kotlinx.datetime.Clock
 
@@ -108,10 +109,11 @@ class LogEvent(
         ): LogEvent {
             val timestamp = getNanosecond()
             val map = MDC.copyOfContextMap
-            val topic = map[TAG_TOPIC] ?: "-"
-            val hostname = map[TAG_HOSTNAME] ?: "-"
-            val pid = map[TAG_PID] ?: "-"
-            val env = map[TAG_ENV] ?: "-"
+            println(map)
+            val topic = map[TAG_TOPIC] ?: "unknown"
+            val hostname = map[TAG_HOSTNAME] ?: "localhost"
+            val pid = map[TAG_PID] ?: getPid().toString()
+            val env = map[TAG_ENV] ?: "dev"
 
             val tagMap =
                 map.filter {

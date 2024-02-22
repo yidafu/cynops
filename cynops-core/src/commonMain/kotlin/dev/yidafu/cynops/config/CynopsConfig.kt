@@ -9,6 +9,9 @@ data class CynopsConfig(
     val appenderList: MutableList<Appender> = mutableListOf(),
     val minLevel: Level = DEFAULT_LOG_LEVEL,
     val cacheStrategy: LogCacheStrategy = LogCacheStrategy.SuspendCacheStrategy,
+    val env: String = "dev",
+    val topic: String = "default",
+    val hostname: String = "localhost",
 ) {
     fun merge(config: CynopsConfig): CynopsConfig {
         return CynopsConfig(

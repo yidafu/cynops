@@ -1,6 +1,7 @@
 package dev.yidafu.cynops
 
 import dev.yidafu.cynops.config.CynopsConfig
+import dev.yidafu.cynops.mdc.MDC
 
 class Logger(val context: LoggerContext = DefaultLoggerContext) {
     inline fun v(
@@ -124,5 +125,11 @@ class Logger(val context: LoggerContext = DefaultLoggerContext) {
 }
 
 fun Logger(block: CynopsConfig.() -> Unit): Logger {
-    return Logger(LoggerContext(config = CynopsConfig().apply(block)))
+    val config = CynopsConfig().apply(block)
+    val context = LoggerContext(config)
+    context.start()
+    MDC.put(TAG_ENV, config.env)
+    MDC.put(TAG_TOPIC, config.topic)
+    MDC.put(TAG_HOSTNAME, config.hostname)
+    return Logger(context)
 }

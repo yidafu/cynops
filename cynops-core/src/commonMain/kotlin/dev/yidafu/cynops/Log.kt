@@ -1,14 +1,11 @@
 package dev.yidafu.cynops
 
 import dev.yidafu.cynops.helpers.DefaultMessageFormatter
-import dev.yidafu.cynops.helpers.runOnLog
 
 @Suppress("OVERRIDE_BY_INLINE")
 class Log(val tag: String, private val context: LoggerContext) : ILog {
     fun log(event: ILogEvent) {
-        runOnLog {
-            context.sharedFlow.emit(event)
-        }
+        context.sharedFlow.tryEmit(event)
     }
 
     inline fun log(
@@ -65,11 +62,11 @@ class Log(val tag: String, private val context: LoggerContext) : ILog {
     }
 
     inline fun i(message: String) {
-        d(tag, message)
+        i(tag, message)
     }
 
     inline fun i(message: () -> String) {
-        d(tag, message())
+        i(tag, message())
     }
 
     override fun i(

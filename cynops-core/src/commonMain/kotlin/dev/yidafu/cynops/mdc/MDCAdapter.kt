@@ -1,5 +1,55 @@
 package dev.yidafu.cynops.mdc
 
+internal var mdcAdapter: MDCAdapter? = DefaultMDCAdapter()
+
+abstract class AbstractMDCAdapter : MDCAdapter {
+    init {
+        mdcAdapter = this
+    }
+}
+
+class DefaultMDCAdapter() : AbstractMDCAdapter() {
+    override val copyOfContextMap: Map<String, String>
+        get() = map.toMap()
+
+    private val map = mutableMapOf<String, String>()
+    init {
+        copyOfContextMap.forEach {
+            put(it.key, it.value)
+        }
+    }
+    override fun put(key: String, value: String) {
+        map[key] = value
+    }
+
+    override fun get(key: String): String? = map[key]
+
+    override fun remove(key: String) {
+        map.remove(key)
+    }
+
+    override fun clear() {
+        map.clear()
+    }
+
+    override fun setContextMap(contextMap: Map<String, String>) {
+        clear()
+        map.putAll(contextMap)
+    }
+
+    override fun pushByKey(key: String, value: String) {
+        put(key, value)
+    }
+
+    override fun popByKey(key: String): String? = get(key)
+
+    override fun getCopyOfDequeByKey(key: String): ArrayDeque<String>? {
+        return ArrayDeque(map.keys)
+    }
+
+    override fun clearDequeByKey(key: String) = remove(key)
+}
+
 /**
  * This interface abstracts the service offered by various MDC
  * implementations.
