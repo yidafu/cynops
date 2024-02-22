@@ -3,7 +3,7 @@ package dev.yidafu.cynops.codec
 import dev.yidafu.cynops.ILogEvent
 import kotlinx.datetime.Instant
 
-object StringCodec : ICodec<ILogEvent> {
+object PlainCodec : ICodec<ILogEvent> {
     /**
      *
      */
@@ -14,7 +14,7 @@ object StringCodec : ICodec<ILogEvent> {
                     event.timestamp.substring(0, event.timestamp.length - 6).toLong(),
                 ).toString(),
             )
-            append("] ")
+            append(" [")
             append(event.hostname)
             append(" - ")
             append(event.env)

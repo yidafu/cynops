@@ -3,12 +3,11 @@ package dev.yidafu.cynops.appender
 import dev.yidafu.cynops.ILogEvent
 import dev.yidafu.cynops.LoggerContext
 import dev.yidafu.cynops.codec.ICodec
-import dev.yidafu.cynops.helpers.runOnLog
+import dev.yidafu.cynops.helpers.runOnIo
 import dev.yidafu.cynops.listener.EventBus
-import kotlinx.coroutines.flow.takeWhile
 
 /**
- * implement [dev.yidafu.loki.core.listener.EventListener] interface
+ * implement [dev.yidafu.cynops.listener.EventListener] interface
  */
 abstract class BaseAppender : Appender {
     override lateinit var context: LoggerContext
@@ -22,9 +21,9 @@ abstract class BaseAppender : Appender {
 
     override fun onStart() {
         _isStarted = true
-        runOnLog {
+        runOnIo {
             context.sharedFlow
-                .takeWhile { _isStarted }
+//                .takeWhile { _isStarted }
                 .collect {
                     doAppend(it)
                 }
