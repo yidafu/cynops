@@ -17,10 +17,10 @@ abstract class BaseCleaner(private val checkInterval: Long) : Cleaner, EventList
         if (checkInterval > 0) {
             job =
                 runOnLog {
-                    while (isStarted()) {
-                        clean()
-                        delay(100)
-                    }
+//                    while (isStarted()) {
+//                        clean()
+//                        delay(100)
+//                    }
                 }
         }
     }

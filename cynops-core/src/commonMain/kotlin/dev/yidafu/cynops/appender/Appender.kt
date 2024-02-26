@@ -8,6 +8,8 @@ interface Appender : EventListener {
     abstract var name: String
     abstract var context: LoggerContext
 
+    fun filter(event: ILogEvent): Boolean
+
     fun doAppend(event: ILogEvent)
 
     fun flush()
