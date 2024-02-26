@@ -20,17 +20,23 @@ class LoggerContext(
     }
 
     fun start() {
-        config.appenderList.forEach { it.onStart() }
+        config.appenderList.forEach {
+            it.onStart()
+        }
     }
 
     fun stop() {
         config.appenderList.forEach { it.onStop() }
     }
+
+    companion object {
+        val Default: LoggerContext by lazy {
+            LoggerContext(
+                CynopsConfig(
+                    mutableListOf(ConsoleAppender()),
+                ),
+            )
+        }
+    }
 }
 
-val DefaultLoggerContext =
-    LoggerContext(
-        CynopsConfig(
-            mutableListOf(ConsoleAppender()),
-        ),
-    )

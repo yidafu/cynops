@@ -1,9 +1,12 @@
 package dev.yidafu.cynops
 
+import dev.yidafu.cynops.LogEvent.Companion.TAG_ENV
+import dev.yidafu.cynops.LogEvent.Companion.TAG_HOSTNAME
+import dev.yidafu.cynops.LogEvent.Companion.TAG_TOPIC
 import dev.yidafu.cynops.config.CynopsConfig
 import dev.yidafu.cynops.mdc.MDC
 
-class Logger(val context: LoggerContext = DefaultLoggerContext) {
+class Logger(val context: LoggerContext = LoggerContext.Default) {
     inline fun v(
         tag: String,
         message: () -> String,
@@ -116,11 +119,11 @@ class Logger(val context: LoggerContext = DefaultLoggerContext) {
 
     companion object {
         val logMap = mutableMapOf<String, Log>()
-        private val defaultLogger = Logger(DefaultLoggerContext)
+//        private val defaultLogger = Logger(LoggerContext.Default)
 
-        fun tag(tag: String): Log {
-            return defaultLogger.tag(tag)
-        }
+//        fun tag(tag: String): Log {
+//            return defaultLogger.tag(tag)
+//        }
     }
 }
 

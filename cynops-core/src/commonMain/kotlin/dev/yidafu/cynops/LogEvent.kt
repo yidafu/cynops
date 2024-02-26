@@ -4,14 +4,6 @@ import dev.yidafu.cynops.helpers.getPid
 import dev.yidafu.cynops.mdc.MDC
 import kotlinx.datetime.Clock
 
-const val TAG_TIMESTAMP = "timestamp"
-const val TAG_TOPIC = "topic"
-const val TAG_HOSTNAME = "hostname"
-const val TAG_PID = "pid"
-const val TAG_ENV = "env"
-const val TAG_LEVEL = "level"
-const val TAG_LOGGER_NAME = "name"
-
 /**
  * ILogEvent Implement
  */
@@ -91,6 +83,14 @@ class LogEvent(
     }
 
     companion object {
+        const val TAG_TIMESTAMP = "timestamp"
+        const val TAG_TOPIC = "topic"
+        const val TAG_HOSTNAME = "hostname"
+        const val TAG_PID = "pid"
+        const val TAG_ENV = "env"
+        const val TAG_LEVEL = "level"
+        const val TAG_LOGGER_NAME = "name"
+
         private fun getNanosecond(): Long {
             val instant = Clock.System.now()
 
@@ -109,7 +109,6 @@ class LogEvent(
         ): LogEvent {
             val timestamp = getNanosecond()
             val map = MDC.copyOfContextMap
-            println(map)
             val topic = map[TAG_TOPIC] ?: "unknown"
             val hostname = map[TAG_HOSTNAME] ?: "localhost"
             val pid = map[TAG_PID] ?: getPid().toString()
