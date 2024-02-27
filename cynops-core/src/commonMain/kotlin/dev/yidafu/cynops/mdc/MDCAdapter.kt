@@ -13,12 +13,17 @@ class DefaultMDCAdapter() : AbstractMDCAdapter() {
         get() = map.toMap()
 
     private val map = mutableMapOf<String, String>()
+
     init {
         copyOfContextMap.forEach {
             put(it.key, it.value)
         }
     }
-    override fun put(key: String, value: String) {
+
+    override fun put(
+        key: String,
+        value: String,
+    ) {
         map[key] = value
     }
 
@@ -37,7 +42,10 @@ class DefaultMDCAdapter() : AbstractMDCAdapter() {
         map.putAll(contextMap)
     }
 
-    override fun pushByKey(key: String, value: String) {
+    override fun pushByKey(
+        key: String,
+        value: String,
+    ) {
         put(key, value)
     }
 

@@ -19,7 +19,7 @@ data class CynopsConfigFileAppender(
     var namingStrategyName: String,
     var maxSurvivalTime: Long = 7.days.inWholeMilliseconds,
 //    var namingStrategy: FileNamingStrategy,
-    var cleanerCheckInterval: Long = 5.minutes.inWholeMilliseconds
+    var cleanerCheckInterval: Long = 5.minutes.inWholeMilliseconds,
 )
 
 fun CynopsConfig.file() {
@@ -41,20 +41,22 @@ class FileAppender(
     override var name: String = "FILE",
     override var encoder: ICodec<ILogEvent> = LogCodec,
 ) : BufferedAppender(config) {
-    private val namingStrategy: FileNamingStrategy = NamingStrategyFactory.getStrategy(
-        config._fileAppender.namingStrategyName
-    )
+    private val namingStrategy: FileNamingStrategy =
+        NamingStrategyFactory.getStrategy(
+            config._fileAppender.namingStrategyName,
+        )
 
     private var outputStream: LogFileOutputStream? = null
 
     private val logDir
         get() = config._fileAppender.logDir
 
-    private val cleaner = FixedSurvivalTimeCleaner(
-        config._fileAppender.logDir,
-        config._fileAppender.maxSurvivalTime,
-        config._fileAppender.cleanerCheckInterval
-    )
+    private val cleaner =
+        FixedSurvivalTimeCleaner(
+            config._fileAppender.logDir,
+            config._fileAppender.maxSurvivalTime,
+            config._fileAppender.cleanerCheckInterval,
+        )
 
     private val fs = SystemFileSystem
     private val logFilePath: String

@@ -2,14 +2,12 @@ package dev.yidafu.cynops.appender
 
 import dev.yidafu.cynops.ILogEvent
 import dev.yidafu.cynops.LoggerContext
-import dev.yidafu.cynops.appender.filter.Filter
 import dev.yidafu.cynops.appender.filter.FilterReply
 import dev.yidafu.cynops.codec.ICodec
 import dev.yidafu.cynops.config.CynopsConfig
 import dev.yidafu.cynops.helpers.runOnIo
 import dev.yidafu.cynops.listener.EventBus
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
 
 /**
  * implement [dev.yidafu.cynops.listener.EventListener] interface
@@ -23,7 +21,6 @@ abstract class BaseAppender() : Appender {
     private var _isStarted = false
 
     abstract var encoder: ICodec<ILogEvent>
-
 
     /**
      *

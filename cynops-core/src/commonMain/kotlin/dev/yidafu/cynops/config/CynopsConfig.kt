@@ -23,6 +23,7 @@ data class CynopsConfig(
     fun appender(block: CynopsConfig.() -> Unit) {
         block()
     }
+
     fun merge(config: CynopsConfig): CynopsConfig {
         return CynopsConfig(
             appenderList,

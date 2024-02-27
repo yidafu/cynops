@@ -2,7 +2,6 @@ package dev.yidafu.cynops.helpers
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 
 actual fun LocalDateTime.format(format: String): String {

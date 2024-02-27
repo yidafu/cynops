@@ -3,7 +3,6 @@ package dev.yidafu.cynops.appender
 import kotlinx.io.Sink
 
 class LogFileOutputStream(private val file: Sink) {
-
     fun write(b: ByteArray) {
         println("log file write")
         safeWrite(b)

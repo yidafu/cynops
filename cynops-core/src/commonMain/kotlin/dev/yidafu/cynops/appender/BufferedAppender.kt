@@ -28,15 +28,16 @@ abstract class BufferedAppender(override var config: CynopsConfig) : BaseAppende
         }
     }
 
-    override fun doAppend(event: ILogEvent) = withLock {
-        bufferedList.add(event)
-        if (strategy.maxSize > bufferedList.size) {
-            flush()
+    override fun doAppend(event: ILogEvent) =
+        withLock {
+            bufferedList.add(event)
+            if (strategy.maxSize > bufferedList.size) {
+                flush()
+            }
+            if (strategy.interval > (currentMillisecond - lastFlushTime)) {
+                flush()
+            }
         }
-        if (strategy.interval > (currentMillisecond - lastFlushTime)) {
-            flush()
-        }
-    }
 
     override fun flush() {
         lastFlushTime = currentMillisecond
@@ -45,12 +46,13 @@ abstract class BufferedAppender(override var config: CynopsConfig) : BaseAppende
         }
     }
 
-    private suspend fun flushLog() = withLock {
-        bufferedList.chunked(20).forEach { list ->
-            asyncAppend(list)
+    private suspend fun flushLog() =
+        withLock {
+            bufferedList.chunked(20).forEach { list ->
+                asyncAppend(list)
+            }
+            bufferedList.clear()
         }
-        bufferedList.clear()
-    }
 
     /**
      * async append eventArray
