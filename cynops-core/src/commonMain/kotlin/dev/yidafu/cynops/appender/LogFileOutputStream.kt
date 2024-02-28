@@ -1,15 +1,15 @@
 package dev.yidafu.cynops.appender
 
 import kotlinx.io.Sink
+import kotlinx.io.writeString
 
 class LogFileOutputStream(private val file: Sink) {
-    fun write(b: ByteArray) {
-        println("log file write")
-        safeWrite(b)
+    fun write(s: String) {
+        file.writeString(s)
     }
 
-    private fun safeWrite(buf: ByteArray) {
-        file.write(buf)
+    fun write(b: ByteArray) {
+        file.write(b, b.size)
     }
 
     fun close() {

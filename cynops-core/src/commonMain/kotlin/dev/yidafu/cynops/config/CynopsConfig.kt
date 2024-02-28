@@ -13,13 +13,28 @@ typealias AppenderList = MutableList<Appender>
 data class CynopsConfig(
     val appenderList: AppenderList = mutableListOf(),
     val minLevel: Level = DEFAULT_LOG_LEVEL,
-    val cacheStrategy: LogCacheStrategy = LogCacheStrategy.SuspendCacheStrategy,
+    val cacheStrategy: LogCacheStrategy = LogCacheStrategy.DropLastCacheStrategy(),
     val filters: List<Filter> = listOf(LevelFilter(Level.Debug)),
     val env: String = "dev",
     val topic: String = "default",
     val hostname: String = "localhost",
     val appenderBufferedStrategy: AppenderBufferedStrategy = AppenderBufferedStrategy.MaxBufferedSizeStrategy(20),
 ) {
+    internal val extraConfigMap = mutableMapOf<String, Any>()
+
+    internal fun <T : Any> getOrInit(
+        key: String,
+        initFn: () -> T,
+    ): T {
+        return extraConfigMap[key]?.let {
+            it as T
+        } ?: run {
+            val initValue = initFn()
+            extraConfigMap[key] = initValue
+            initValue
+        }
+    }
+
     fun appender(block: CynopsConfig.() -> Unit) {
         block()
     }
@@ -30,6 +45,10 @@ data class CynopsConfig(
             config.minLevel,
             config.cacheStrategy,
         )
+    }
+
+    override fun hashCode(): Int {
+        return 123456
     }
 }
 

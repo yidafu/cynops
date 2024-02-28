@@ -9,6 +9,7 @@ import dev.yidafu.cynops.codec.LogCodec
 import dev.yidafu.cynops.config.CynopsConfig
 import kotlinx.datetime.Clock
 import kotlinx.io.buffered
+import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlin.time.Duration.Companion.days
@@ -27,11 +28,15 @@ fun CynopsConfig.file() {
 }
 
 internal fun CynopsConfig.fileAppender(block: CynopsConfigFileAppender.() -> Unit) {
-    _fileAppender.apply(block)
+    mFileAppender.apply(block)
 }
 
-internal val CynopsConfig._fileAppender: CynopsConfigFileAppender
-    get() = CynopsConfigFileAppender("./logs", "data")
+const val FileAppenderConfigKey = "fileAppender"
+internal val CynopsConfig.mFileAppender: CynopsConfigFileAppender
+    get() =
+        getOrInit(FileAppenderConfigKey) {
+            CynopsConfigFileAppender("./logs", "data")
+        }
 
 /**
  * write log to file
@@ -43,22 +48,22 @@ class FileAppender(
 ) : BufferedAppender(config) {
     private val namingStrategy: FileNamingStrategy =
         NamingStrategyFactory.getStrategy(
-            config._fileAppender.namingStrategyName,
+            config.mFileAppender.namingStrategyName,
         )
 
     private var outputStream: LogFileOutputStream? = null
 
     private val logDir
-        get() = config._fileAppender.logDir
+        get() = config.mFileAppender.logDir
 
     private val cleaner =
         FixedSurvivalTimeCleaner(
-            config._fileAppender.logDir,
-            config._fileAppender.maxSurvivalTime,
-            config._fileAppender.cleanerCheckInterval,
+            config.mFileAppender.logDir,
+            config.mFileAppender.maxSurvivalTime,
+            config.mFileAppender.cleanerCheckInterval,
         )
 
-    private val fs = SystemFileSystem
+    private val fs: FileSystem = SystemFileSystem
     private val logFilePath: String
         get() = "$logDir/${namingStrategy.generate(0, Clock.System.now().toEpochMilliseconds())}.log"
 
@@ -71,7 +76,6 @@ class FileAppender(
                 fs.createDirectories(it)
             }
         }
-
         val logFile = fs.sink(path, true).buffered()
         outputStream = LogFileOutputStream(logFile)
     }
@@ -85,7 +89,7 @@ class FileAppender(
 
     override suspend fun asyncAppend(eventArray: List<ILogEvent>) {
         val evtStr = eventArray.joinToString("\n") { encoder.encode(it) } + "\n"
-        outputStream?.write(evtStr.encodeToByteArray())
+        outputStream?.write(evtStr)
         outputStream?.flush()
     }
 }

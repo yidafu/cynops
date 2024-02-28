@@ -4,8 +4,8 @@ import dev.yidafu.cynops.config.CynopsConfig
 
 fun CynopsConfig.console() {
     val appender = ConsoleAppender()
-    appender.config = this
-    appenderList.add(ConsoleAppender())
+    appender.initConfig(this)
+    appenderList.add(appender)
 }
 
 expect class ConsoleAppender() : SyncAppender {

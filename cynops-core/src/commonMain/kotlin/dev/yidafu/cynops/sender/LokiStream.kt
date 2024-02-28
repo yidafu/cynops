@@ -1,5 +1,8 @@
 package dev.yidafu.cynops.sender
 
+import dev.yidafu.cynops.ILogEvent
+import dev.yidafu.cynops.LogEvent
+
 /**
  * copy from kotlinx.serialization.json.internal
  */
@@ -142,4 +145,23 @@ data class LokiSteams(
     override fun hashCode(): Int {
         return streams.contentHashCode()
     }
+
+    companion object {}
+}
+
+fun LokiSteams.Companion.form(events: List<ILogEvent>): LokiSteams {
+    val streams: Array<LokiStream> =
+        events
+            .map { it as LogEvent }
+            .groupBy { it.uniqueKey }
+            .values
+            .map {
+                val tagMap = it[0].getMap()
+                val values =
+                    it.map { e ->
+                        arrayOf(e.timestamp, e.message)
+                    }.toTypedArray()
+                LokiStream(tagMap, values)
+            }.toTypedArray()
+    return LokiSteams(streams)
 }

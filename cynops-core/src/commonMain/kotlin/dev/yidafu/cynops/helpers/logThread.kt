@@ -10,5 +10,5 @@ fun runOnLog(block: suspend CoroutineScope.() -> Unit): Job {
 }
 
 fun runOnIo(block: suspend CoroutineScope.() -> Unit): Job {
-    return CoroutineScope(Dispatchers.Unconfined).launch(block = block)
+    return CoroutineScope(Dispatchers.Default).launch(block = block)
 }
