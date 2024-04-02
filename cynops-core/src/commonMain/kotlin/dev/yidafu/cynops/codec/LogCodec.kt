@@ -138,14 +138,9 @@ object LogCodec : ICodec<ILogEvent> {
 
         return LogEvent(
             timestamp,
-            topic,
-            hostname,
-            pid,
-            env,
-            Level.from(level),
-            tag,
-            tagMap,
             msg,
+            Level.from(level),
+            tagMap,
         )
     }
 

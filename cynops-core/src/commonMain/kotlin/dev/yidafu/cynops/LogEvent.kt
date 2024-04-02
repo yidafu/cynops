@@ -1,7 +1,6 @@
 package dev.yidafu.cynops
 
 import dev.yidafu.cynops.helpers.getPid
-import dev.yidafu.cynops.mdc.MDC
 import kotlinx.datetime.Clock
 
 /**
@@ -9,49 +8,32 @@ import kotlinx.datetime.Clock
  */
 class LogEvent(
     override val timestamp: String,
-    override val topic: String,
-    override val hostname: String,
-    override val pid: String,
-    override val env: String,
-    override val level: Level,
-    override val tag: String,
-    override val tagMap: Map<String, String>,
     override val message: String,
+    /**
+     * 独立字段
+     */
+    override val level: Level,
+    override val tagMap: Map<String, String>,
 ) : ILogEvent {
+    override val topic = tagMap[TAG_TOPIC] ?: "unknown"
+    override val hostname = tagMap[TAG_HOSTNAME] ?: "localhost"
+    override val pid by lazy {
+        tagMap[TAG_PID] ?: getPid().toString()
+    }
+    override val env = tagMap[TAG_ENV] ?: "dev"
+    override val tag = tagMap[TAG_LOGGER_NAME] ?: "unknown"
+
     /**
      * unique key of LogEvent
      */
     val uniqueKey by lazy {
-        StringBuilder().apply {
-            append(topic)
-            append(',')
-            append(hostname)
-            append(',')
-            append(pid)
-            append(',')
-            append(env)
-            append(',')
-            append(level)
-            append(',')
-            append(tag)
-            append(',')
-            append(tagMap.values.joinToString(","))
-        }.toString()
+        tagMap.values.joinToString(",")
     }
 
     /**
      * return all label. topic/hostname/pid/env/level/name is default label.
      */
-    fun getMap(): Map<String, String> {
-        return mapOf(
-            "topic" to topic,
-            "hostname" to hostname,
-            "pid" to pid,
-            "env" to env,
-            "level" to level.toString(),
-            "tag" to tag,
-        ) + tagMap
-    }
+    fun getMap(): Map<String, String> = tagMap
 
     override fun equals(other: Any?): Boolean {
         if (other is LogEvent) {
@@ -106,31 +88,21 @@ class LogEvent(
             level: Level,
             loggerName: String,
             message: String,
+            ctxMap: Map<String, String>,
         ): LogEvent {
             val timestamp = getNanosecond()
-            val map = MDC.copyOfContextMap
-            val topic = map[TAG_TOPIC] ?: "unknown"
-            val hostname = map[TAG_HOSTNAME] ?: "localhost"
-            val pid = map[TAG_PID] ?: getPid().toString()
-            val env = map[TAG_ENV] ?: "dev"
 
             val tagMap =
-                map.filter {
-                    it.key != TAG_TOPIC &&
-                        it.key != TAG_HOSTNAME &&
-                        it.key != TAG_PID &&
-                        it.key != TAG_ENV
-                }.toMap()
+                ctxMap +
+                    mapOf(
+                        TAG_LOGGER_NAME to loggerName,
+                        TAG_LEVEL to level.toString(),
+                    )
             return LogEvent(
                 timestamp.toString(),
-                topic,
-                hostname,
-                pid,
-                env,
-                level,
-                loggerName,
-                tagMap,
                 message,
+                level,
+                tagMap,
             )
         }
     }

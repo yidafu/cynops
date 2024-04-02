@@ -15,11 +15,11 @@ sealed class LogCacheStrategy(
 
     class DropFirstCacheStrategy(
         replay: Int = 0,
-        bufferCapacity: Int = 0,
+        bufferCapacity: Int = 100,
     ) : LogCacheStrategy(replay, bufferCapacity, BufferOverflow.DROP_LATEST)
 
     class DropLastCacheStrategy(
         replay: Int = 0,
-        bufferCapacity: Int = 10,
+        bufferCapacity: Int = 100,
     ) : LogCacheStrategy(replay, bufferCapacity, BufferOverflow.DROP_LATEST)
 }

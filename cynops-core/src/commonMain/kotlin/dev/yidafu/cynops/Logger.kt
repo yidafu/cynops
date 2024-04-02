@@ -1,12 +1,10 @@
 package dev.yidafu.cynops
 
-import dev.yidafu.cynops.LogEvent.Companion.TAG_ENV
-import dev.yidafu.cynops.LogEvent.Companion.TAG_HOSTNAME
-import dev.yidafu.cynops.LogEvent.Companion.TAG_TOPIC
 import dev.yidafu.cynops.config.CynopsConfig
-import dev.yidafu.cynops.mdc.MDC
 
 class Logger(val context: LoggerContext = LoggerContext.Default) {
+    val rootLogMap = mutableMapOf<String, Log>()
+
     inline fun v(
         tag: String,
         message: () -> String,
@@ -110,15 +108,14 @@ class Logger(val context: LoggerContext = LoggerContext.Default) {
     }
 
     inline fun tag(tag: String): Log {
-        return logMap[tag] ?: run {
-            val log = Log(tag, context)
-            logMap[tag] = log
+        return rootLogMap[tag] ?: run {
+            val log = RootLog(tag, context)
+            rootLogMap[tag] = log
             log
         }
     }
 
     companion object {
-        val logMap = mutableMapOf<String, Log>()
 //        private val defaultLogger = Logger(LoggerContext.Default)
 
 //        fun tag(tag: String): Log {
@@ -131,8 +128,5 @@ fun Logger(block: CynopsConfig.() -> Unit): Logger {
     val config = CynopsConfig().apply(block)
     val context = LoggerContext(config)
     context.start()
-    MDC.put(TAG_ENV, config.env)
-    MDC.put(TAG_TOPIC, config.topic)
-    MDC.put(TAG_HOSTNAME, config.hostname)
     return Logger(context)
 }

@@ -14,10 +14,11 @@ data class CynopsConfig(
     val appenderList: AppenderList = mutableListOf(),
     val minLevel: Level = DEFAULT_LOG_LEVEL,
     val cacheStrategy: LogCacheStrategy = LogCacheStrategy.DropLastCacheStrategy(),
-    val filters: List<Filter> = listOf(LevelFilter(Level.Debug)),
-    val env: String = "dev",
-    val topic: String = "default",
-    val hostname: String = "localhost",
+    var filters: List<Filter> = listOf(LevelFilter(Level.Debug)),
+    var env: String = "dev",
+    var topic: String = "default",
+    var hostname: String = "localhost",
+    var defaultContextMap: Map<String, String> = emptyMap(),
     val appenderBufferedStrategy: AppenderBufferedStrategy = AppenderBufferedStrategy.MaxBufferedSizeStrategy(20),
 ) {
     internal val extraConfigMap = mutableMapOf<String, Any>()

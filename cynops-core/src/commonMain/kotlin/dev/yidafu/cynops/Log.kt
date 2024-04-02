@@ -1,19 +1,34 @@
 package dev.yidafu.cynops
 
 import dev.yidafu.cynops.helpers.DefaultMessageFormatter
+import dev.yidafu.cynops.helpers.getPid
 
 @Suppress("OVERRIDE_BY_INLINE")
-class Log(val tag: String, private val context: LoggerContext) : ILog {
+open class Log(
+    override val tag: String,
+    protected val context: LoggerContext,
+) : ILog {
+    protected val ctxMap: MutableMap<String, String> = mutableMapOf()
+
+    override fun with(vararg pairs: Pair<String, String>): Log {
+        pairs.forEach { pair ->
+            ctxMap[pair.first] = pair.second
+        }
+        return this
+    }
+
+    override fun getMap(): Map<String, String> = ctxMap
+
     fun log(event: ILogEvent) {
         context.sharedFlow.tryEmit(event)
     }
 
-    inline fun log(
+    fun log(
         level: Level,
         tag: String,
         message: String,
     ) {
-        val event = LogEvent.create(level, tag, message)
+        val event = LogEvent.create(level, tag, message, getMap())
         log(event)
     }
 
@@ -25,7 +40,7 @@ class Log(val tag: String, private val context: LoggerContext) : ILog {
         v(tag, message())
     }
 
-    override inline fun v(
+    override fun v(
         tag: String,
         message: String,
     ) {
@@ -135,25 +150,64 @@ class Log(val tag: String, private val context: LoggerContext) : ILog {
         e(tag, message, throwable)
     }
 
-    override inline fun e(
+    override fun e(
         tag: String,
         message: String,
     ) {
         log(Level.Error, tag, message)
     }
 
-    override inline fun e(
+    override fun e(
         tag: String,
         message: () -> String,
     ) {
         e(tag, message())
     }
 
-    override inline fun e(
+    override fun e(
         tag: String,
         message: String,
         throwable: Throwable,
     ) {
         e(tag, DefaultMessageFormatter.format(message, throwable))
+    }
+
+    override fun child(tag: String): Log {
+        return ChildLog(this, tag, context)
+    }
+}
+
+class ChildLog(private val parent: Log, childTag: String, loggerContext: LoggerContext) : Log(childTag, loggerContext) {
+    override val tag: String by lazy {
+        "${parent.tag}:$childTag"
+    }
+
+    /**
+     * recursively merge parent ctxMap and child ctxMap
+     */
+    override fun getMap(): Map<String, String> {
+        return parent.getMap() + ctxMap
+    }
+}
+
+class RootLog(
+    tag: String,
+    loggerContext: LoggerContext,
+) : Log(
+        tag,
+        loggerContext,
+    ) {
+    private val defaultMap =
+        loggerContext.config.defaultContextMap +
+            mapOf(
+                LogEvent.TAG_TOPIC to loggerContext.config.topic,
+                LogEvent.TAG_HOSTNAME to loggerContext.config.hostname,
+                LogEvent.TAG_PID to getPid().toString(),
+                LogEvent.TAG_ENV to loggerContext.config.env,
+                LogEvent.TAG_LOGGER_NAME to tag,
+            )
+
+    override fun getMap(): Map<String, String> {
+        return defaultMap + ctxMap
     }
 }

@@ -1,6 +1,12 @@
 package dev.yidafu.cynops
 
 interface ILog {
+    val tag: String
+
+    fun with(vararg pairs: Pair<String, String>): ILog
+
+    fun getMap(): Map<String, String>
+
     fun v(
         tag: String,
         message: String,
@@ -62,4 +68,6 @@ interface ILog {
         message: String,
         throwable: Throwable,
     )
+
+    fun child(tag: String): ILog
 }
