@@ -7,8 +7,16 @@ plugins {
 
 subprojects {
     repositories {
+        gradlePluginPortal()
         maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
         google()
         mavenCentral()
     }
+}
+
+repositories {
+    gradlePluginPortal()
+    maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
+    google()
+    mavenCentral()
 }

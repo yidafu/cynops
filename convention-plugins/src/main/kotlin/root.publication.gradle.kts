@@ -5,7 +5,15 @@ plugins {
 allprojects {
     group = "org.jetbrains.kotlinx.multiplatform-library-template"
     version = "0.0.1"
+    repositories {
+        maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
+
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
 }
+
 
 nexusPublishing {
     // Configure maven central repository
