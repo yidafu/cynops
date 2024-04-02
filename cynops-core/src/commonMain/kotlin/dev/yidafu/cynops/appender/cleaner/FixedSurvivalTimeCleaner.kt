@@ -1,5 +1,7 @@
 package dev.yidafu.cynops.appender.cleaner
 
+import dev.yidafu.cynops.io.fileInfo
+import dev.yidafu.cynops.io.readDir
 import kotlinx.datetime.Clock
 import kotlinx.io.files.FileSystem
 import kotlinx.io.files.Path
@@ -14,28 +16,26 @@ class FixedSurvivalTimeCleaner(
     private val maxSurvivalTime: Long,
     checkInterval: Long,
 ) : BaseCleaner(checkInterval) {
-    val fileSystem: FileSystem = SystemFileSystem
+    val fs: FileSystem = SystemFileSystem
 
-    val Path.isDirectory get() = fileSystem.metadataOrNull(this)?.isDirectory == true
-    val Path.isRegularFile get() = fileSystem.metadataOrNull(this)?.isRegularFile == true
+    val Path.isDirectory get() = fs.metadataOrNull(this)?.isDirectory == true
+    val Path.isRegularFile get() = fs.metadataOrNull(this)?.isRegularFile == true
 
     override fun clean() {
         val logDirPath = Path(logDir)
         if (logDirPath.isDirectory) {
             val currentTime = Clock.System.now().toEpochMilliseconds()
-            val dir = fileSystem.source(logDirPath)
-//            fileSystem.list(logDirPath)
-//                .filter {
-//                    it.isRegularFile && it.name.endsWith(".log")
-//                }.forEach { path ->
-//                    fileSystem.metadataOrNull(path)
-//                        ?.lastModifiedAtMillis
-//                        ?.let {
-//                            if (currentTime - it > maxSurvivalTime) {
-//                                fileSystem.delete(path)
-//                            }
-//                        }
-//                }
+            val dir = fs.source(logDirPath)
+            readDir(logDirPath.toString())?.filter {
+                it.isRegularFile && it.name.endsWith(".log")
+            }?.forEach { path ->
+                val info =
+                    fileInfo(path.toString())?.let {
+                        if (currentTime - it.ctime > maxSurvivalTime) {
+                            fs.delete(path)
+                        }
+                    }
+            }
         }
     }
 }

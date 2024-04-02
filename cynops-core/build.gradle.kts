@@ -48,10 +48,10 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.koin.core)
-//                implementation(libs.okio.core)
                 implementation(libs.kotlinx.io.core)
 
                 implementation(libs.ktor.client.core)
+                implementation(project(":cynops-io"))
             }
         }
 
@@ -63,9 +63,6 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.koin.test)
                 implementation(libs.kotest.framework.engine)
-//                implementation(libs.okio.fakefilesystem)
-
-//                implementation("io.kotest:kotest-extensions-mockserver:4.4.3")
             }
         }
 
@@ -103,6 +100,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":cynops-io"))
     add("kspCommonMainMetadata", libs.koin.ksp.compiler)
     // DO NOT add bellow dependencies
 //    add("kspAndroid", libs.koin.ksp.compiler)
