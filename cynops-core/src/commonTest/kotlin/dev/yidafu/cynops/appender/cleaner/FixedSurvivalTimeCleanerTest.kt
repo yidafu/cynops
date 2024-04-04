@@ -13,17 +13,38 @@ import kotlinx.io.writeString
 class FixedSurvivalTimeCleanerTest : FunSpec({
     beforeEach {
         SystemFileSystem.createDirectories(Path("/tmp/log/cleaner-test"))
+        SystemFileSystem.createDirectories(Path("/tmp/log/cleaner-test2"))
     }
-    test("FixedSurvivalTimeCleaner") {
-        SystemFileSystem.sink(Path("/tmp/log/cleaner-test/test1.log")).buffered().writeString("update modify date")
+    test("FixedSurvivalTimeCleaner by handle") {
+       SystemFileSystem.sink(Path("/tmp/log/cleaner-test/test1.log")).buffered().apply {
+           writeString("update modify date")
+           flush()
+       }
 
-        val cleaner = FixedSurvivalTimeCleaner("/tmp/log/cleaner-test", 1000, 100)
+
+        val cleaner = FixedSurvivalTimeCleaner("/tmp/log/cleaner-test", 1000, 3000)
         runBlocking {
-//            cleaner.clean()
-//            readDir("/tmp/log/cleaner-test")?.size shouldBe 1
-//            delay(1500)
-//            cleaner.clean()
-//            readDir("/tmp/log/cleaner-test")?.size shouldBe 0
+            cleaner.clean()
+            readDir("/tmp/log/cleaner-test")?.size shouldBe 1
+            delay(1500)
+            cleaner.clean()
+            readDir("/tmp/log/cleaner-test")?.size shouldBe 0
+        }
+    }
+
+    test("auto clean log files") {
+        SystemFileSystem.sink(Path("/tmp/log/cleaner-test2/test.log")).buffered().apply {
+            writeString("update modify date")
+            flush()
+        }
+        val cleaner = FixedSurvivalTimeCleaner("/tmp/log/cleaner-test2", 1000, 3000)
+        runBlocking {
+            cleaner.onStart()
+            readDir("/tmp/log/cleaner-test2")?.size shouldBe 1
+            delay(5000)
+
+            readDir("/tmp/log/cleaner-test2")?.size shouldBe 0
+            cleaner.onStop()
         }
     }
 })

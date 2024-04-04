@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktlint)
+    id("org.jetbrains.kotlinx.kover") version "0.7.6"
+
     id("module.publication")
 }
 
@@ -20,7 +22,9 @@ kotlin {
     js {
         nodejs()
     }
+
     jvm()
+
     androidTarget {
         publishLibraryVariants("release")
         compilations.all {
@@ -61,7 +65,7 @@ kotlin {
                 implementation(libs.kotest.assertions.core)
                 implementation(libs.kotest.property)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.koin.test)
+//                implementation(libs.koin.test)
                 implementation(libs.kotest.framework.engine)
             }
         }
@@ -70,7 +74,6 @@ kotlin {
             dependencies {
                 implementation(libs.mockk)
                 implementation(libs.slf4j.api)
-                implementation(libs.kotest.runner.junit5)
 
                 // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
                 implementation(libs.slf4j.simple)
@@ -78,7 +81,11 @@ kotlin {
                 implementation(libs.ktor.client.cio)
             }
         }
-
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.kotest.runner.junit5)
+            }
+        }
         val iosMain by getting {
             dependencies {
                 implementation(libs.ktor.client.cio)
@@ -115,4 +122,15 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+}
+
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
