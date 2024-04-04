@@ -35,7 +35,7 @@ const val FileAppenderConfigKey = "fileAppender"
 internal val CynopsConfig.mFileAppender: CynopsConfigFileAppender
     get() =
         getOrInit(FileAppenderConfigKey) {
-            CynopsConfigFileAppender("./logs", "data")
+            CynopsConfigFileAppender("./logs", "date")
         }
 
 /**

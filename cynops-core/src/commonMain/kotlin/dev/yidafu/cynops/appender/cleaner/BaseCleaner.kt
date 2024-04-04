@@ -4,6 +4,7 @@ import dev.yidafu.cynops.helpers.runOnLog
 import dev.yidafu.cynops.listener.EventBus
 import dev.yidafu.cynops.listener.EventListener
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 /**
  *
@@ -16,10 +17,10 @@ abstract class BaseCleaner(private val checkInterval: Long) : Cleaner, EventList
         if (checkInterval > 0) {
             job =
                 runOnLog {
-//                    while (isStarted()) {
-//                        clean()
-//                        delay(100)
-//                    }
+                    while (isStarted()) {
+                        clean()
+                        delay(checkInterval)
+                    }
                 }
         }
     }

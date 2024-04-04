@@ -25,14 +25,12 @@ class FixedSurvivalTimeCleaner(
         val logDirPath = Path(logDir)
         if (logDirPath.isDirectory) {
             val currentTime = Clock.System.now().toEpochMilliseconds()
-            val dir = fs.source(logDirPath)
             readDir(logDirPath.toString())?.filter {
                 it.isRegularFile && it.name.endsWith(".log")
             }?.forEach { path ->
-                val info =
                     fileInfo(path.toString())?.let {
-                        if (currentTime - it.ctime > maxSurvivalTime) {
-                            fs.delete(path)
+                        if (currentTime - it.mtime > maxSurvivalTime) {
+                            fs.delete(path, false)
                         }
                     }
             }
