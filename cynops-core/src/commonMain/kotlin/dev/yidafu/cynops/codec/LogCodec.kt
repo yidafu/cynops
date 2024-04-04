@@ -13,6 +13,9 @@ object LogCodec : ICodec<ILogEvent> {
      * [ILogEvent.message] will replace '\n' to '\\n'
      */
     override fun encode(event: ILogEvent): String {
+        val extraTagKes = event.tagMap.keys.filter {
+            !arrayOf(LogEvent.TAG_HOSTNAME, LogEvent.TAG_ENV, LogEvent.TAG_TOPIC, LogEvent.TAG_LEVEL, LogEvent.TAG_PID, LogEvent.TAG_LOGGER_NAME).contains(it)
+        }
         return StringBuilder().apply {
             append(event.timestamp)
             append(" <")
@@ -28,7 +31,8 @@ object LogCodec : ICodec<ILogEvent> {
             append(" (")
             append(event.tag)
             append(") ")
-            event.tagMap.forEach { (key, value) ->
+            extraTagKes.forEach { key ->
+                val value = event.tagMap[key]
                 append("[$key:$value] ")
             }
             append("- ")
@@ -55,6 +59,7 @@ object LogCodec : ICodec<ILogEvent> {
             }
         var index = firstWhitespace
 
+        val tagMap = mutableMapOf<String, String>()
         val topicIndex = raw.indexOf(WHITESPACE, index + 1)
         val topic =
             if (topicIndex > -1) {
@@ -64,7 +69,7 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 "Unknown"
             }
-
+        tagMap[LogEvent.TAG_TOPIC]  = topic
         val hostnameIndex = raw.indexOf(WHITESPACE, index + 1)
         val hostname =
             if (hostnameIndex > -1) {
@@ -74,6 +79,7 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 "-"
             }
+        tagMap[LogEvent.TAG_HOSTNAME]  = hostname
 
         val pidIndex = raw.indexOf(WHITESPACE, index + 1)
         val pid =
@@ -84,6 +90,7 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 "-1"
             }
+        tagMap[LogEvent.TAG_PID]  = pid
 
         val envIndex = raw.indexOf(WHITESPACE, index + 1)
         val env =
@@ -94,6 +101,7 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 "-"
             }
+        tagMap[LogEvent.TAG_ENV]  = env
 
         val levelIndex = raw.indexOf(WHITESPACE, index + 1)
         val level =
@@ -104,6 +112,7 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 Level.INFO_STR
             }
+        tagMap[LogEvent.TAG_LEVEL]  = level
 
         val tagIndex = raw.indexOf(WHITESPACE, index + 1)
         val tag =
@@ -114,8 +123,8 @@ object LogCodec : ICodec<ILogEvent> {
             } else {
                 "Unknown"
             }
+        tagMap[LogEvent.TAG_LOGGER_NAME]  = tag
 
-        val tagMap = mutableMapOf<String, String>()
         while (index + 1 < raw.length && raw[index + 1] == '[') {
             val rightIndex = raw.indexOf(']', index)
             if (rightIndex > -1) {

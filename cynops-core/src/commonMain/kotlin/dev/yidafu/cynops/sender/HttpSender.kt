@@ -34,6 +34,6 @@ class HttpSender(private var endpoint: String) : Sender {
             }
         }
 
-        return false
+        return true
     }
 }

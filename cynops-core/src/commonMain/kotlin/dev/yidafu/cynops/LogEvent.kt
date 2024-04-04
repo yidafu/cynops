@@ -15,13 +15,13 @@ class LogEvent(
     override val level: Level,
     override val tagMap: Map<String, String>,
 ) : ILogEvent {
-    override val topic = tagMap[TAG_TOPIC] ?: "unknown"
+    override val topic = tagMap[TAG_TOPIC] ?: "Unknown"
     override val hostname = tagMap[TAG_HOSTNAME] ?: "localhost"
     override val pid by lazy {
         tagMap[TAG_PID] ?: getPid().toString()
     }
     override val env = tagMap[TAG_ENV] ?: "dev"
-    override val tag = tagMap[TAG_LOGGER_NAME] ?: "unknown"
+    override val tag = tagMap[TAG_LOGGER_NAME] ?: "Unknown"
 
     /**
      * unique key of LogEvent

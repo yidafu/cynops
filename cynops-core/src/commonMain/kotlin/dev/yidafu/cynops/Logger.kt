@@ -115,6 +115,10 @@ class Logger(val context: LoggerContext = LoggerContext.Default) {
         }
     }
 
+    fun flush() {
+        context.sharedFlow
+    }
+
     companion object {
 //        private val defaultLogger = Logger(LoggerContext.Default)
 

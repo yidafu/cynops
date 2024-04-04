@@ -34,6 +34,9 @@ abstract class BaseAppender() : Appender {
     override fun onStart() {
         _isStarted = true
         runOnIo {
+            /**
+             * TODO: before exit program flush all buffered log events
+             */
             context.sharedFlow
                 .takeWhile {
                     filter(it)

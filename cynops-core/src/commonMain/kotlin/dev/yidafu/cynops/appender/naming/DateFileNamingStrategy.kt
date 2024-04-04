@@ -2,6 +2,7 @@ package dev.yidafu.cynops.appender.naming
 
 import dev.yidafu.cynops.helpers.format
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -13,6 +14,7 @@ class DateFileNamingStrategy(override val name: String = "date") : FileNamingStr
         level: Int,
         timestamp: Long,
     ): String {
-        return Clock.System.now().toLocalDateTime(TimeZone.UTC).format("YYYY-MM-dd")
+        val date = Instant.fromEpochMilliseconds(timestamp)
+        return date.toLocalDateTime(TimeZone.UTC).format("YYYY-MM-dd")
     }
 }

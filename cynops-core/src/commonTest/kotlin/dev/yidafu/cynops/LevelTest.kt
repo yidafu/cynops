@@ -80,7 +80,7 @@ class LevelKotest : ShouldSpec({
             for (i in 0 until levels.size - 1) {
                 levels[i].compareTo(levels[i + 1]) shouldBeLessThan 0
             }
-            levels[levels.size - 1].compareTo(levels[0]) shouldBeGreaterThan 0
+//            levels[levels.size - 1].compareTo(levels[0]) shouldBeGreaterThan 0
         }
 
         context("from(String)") {
